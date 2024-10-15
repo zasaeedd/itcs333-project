@@ -46,7 +46,7 @@ This project is a responsive web-based room booking system for the IT College. I
 
 - **Set up an Apache server using XAMPP (Windows)**:
   - **Download and install XAMPP**:  
-    Download XAMPP from [https://www.apachefriends.org/index.html](https://www.apachefriends.org/index.html) and follow the installation instructions.
+    Download XAMPP from [https://www.apachefriends.org/index.html](https://www.apachefriends.org) and follow the installation instructions.
   - **Start Apache in XAMPP**:  
     Open the XAMPP Control Panel and click the **Start** button next to Apache.
   - **Move project to `htdocs`**:  
