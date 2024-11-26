@@ -8,7 +8,7 @@ body
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: url('background\ hotel.jpeg');
+    background-image: url('public\images\background hotel.jpeg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

@@ -1,10 +1,14 @@
 <?php
 session_start();
-require 'connection.php';
+// Include the database connection script
+require_once '../config/connect.php'; 
+
+// Establish a connection to the database
+$db = connect();
 
 $error = '';
-$pattern_name = "/[a-z\s]{3,20}/i";
-$pattern_username = "/^[a-z][\w]{3,12}/i";
+$pattern_name = "/^[a-z\s]{3,20}$/i";
+$pattern_username = "/^[a-z][\w]{3,12}$/i";
 $pattern_password = "/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9_#@%\*\-]{8,24}$/";
 $pattern_email = "/^20\d{7}@stu\.uob\.edu\.bh$/";
 
@@ -16,14 +20,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     $email = test_input($_POST['email']);
     $password = test_input($_POST['password']);
 
-    if (preg_match($pattern_name,$first_name) && preg_match($pattern_name,$last_name) && preg_match($pattern_username,$username)
-     && preg_match($pattern_password,$password) && preg_match($pattern_email,$email)) 
+    // Validate all inputs
+    if (preg_match($pattern_name, $first_name) && 
+        preg_match($pattern_name, $last_name) && 
+        preg_match($pattern_username, $username) && 
+        preg_match($pattern_password, $password) && 
+        preg_match($pattern_email, $email)) 
     {
-        
+        // Hash the password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        
-        $sql = "INSERT INTO users (first_name, last_name, username, email, password) VALUES (:first_name, :last_name, :username, :email, :password)";
+        // SQL to insert user into the Users table
+        $sql = "INSERT INTO Users (FirstName, LastName, Username, Email, Password) VALUES (:first_name, :last_name, :username, :email, :password)";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':first_name', $first_name);
         $stmt->bindParam(':last_name', $last_name);
@@ -34,15 +42,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         try {
             $stmt->execute();
 
+            // Set the session and redirect to main page
             $_SESSION['username'] = $username;
             header('Location: main.php');
             exit;
         } catch (PDOException $e) {
-            $error="Error: ".$e->getMessage();
+            // Handle database errors (e.g., duplicate entries)
+            if ($e->getCode() == 23000) { // Integrity constraint violation
+                $error = 'Username or Email already exists.';
+            } else {
+                $error = "Database Error: " . $e->getMessage();
+            }
         }
-    }
-     else {
-        $error = 'Please fill in all fields with valid information ';
+    } else {
+        // Validation failed
+        $error = 'Please fill in all fields with valid information.';
     }
 }
 
@@ -53,9 +67,8 @@ function test_input($data)
     $data = htmlspecialchars($data);
     return $data;
 }
-
-
 ?>
+
 
 <!DOCTYPE html>
 <html>
