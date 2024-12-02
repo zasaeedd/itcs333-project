@@ -30,8 +30,7 @@ if (isset($_GET['roomNo'])) {
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
-            <a class="navbar-brand">IT College Room Booking
-            </a>
+            <a class="navbar-brand">IT College Room Booking</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -65,6 +64,23 @@ if (isset($_GET['roomNo'])) {
                         <p><strong>Equipment:</strong> <?= htmlspecialchars($roomDetails['room']['Equipment'] ?: 'None') ?></p>
                     </div>
                 </div>
+
+                <!-- Booking Form -->
+                <h4 class="mt-4">Book This Room</h4>
+                <form id="bookingForm" action="book_room.php" method="POST">
+                    <input type="hidden" name="roomID" value="<?= htmlspecialchars($roomDetails['room']['RoomID']) ?>">
+                    <label for="startTime">Start Time:</label>
+                    <input type="datetime-local" name="startTime" required>
+                    <label for="endTime">End Time:</label>
+                    <input type="datetime-local" name="endTime" required>
+                    <button type="submit" class="btn btn-success mt-3">Book Room</button>
+                </form>
+
+                <?php if (isset($_GET['success'])): ?>
+                    <p class="alert alert-success mt-3">Booking submitted successfully!</p>
+                <?php elseif (isset($_GET['error'])): ?>
+                    <p class="alert alert-danger mt-3"><?= htmlspecialchars($_GET['error']) ?></p>
+                <?php endif; ?>
 
                 <!-- Day Selector -->
                 <h4 class="mt-4">Select a Day</h4>
