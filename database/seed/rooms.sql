@@ -69,3 +69,4 @@ INSERT INTO Rooms (RoomNo, Status, Capacity, RoomType, Department) VALUES
 (2088, 'Available', 30, 'ClassRoom', 'CE'),
 (2089, 'Available', 30, 'ClassRoom', 'CE'),
 (2091, 'Available', 30, 'ClassRoom', 'CE');
+

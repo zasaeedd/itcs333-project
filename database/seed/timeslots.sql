@@ -1,6 +1,4 @@
 USE 333project;
-
-
 -- Insert timeslots for all rooms and days of the week dynamically
 INSERT INTO Timeslots (RoomID, DayOfWeek, StartTime, EndTime)
 SELECT 
@@ -83,5 +81,4 @@ CROSS JOIN (
     SELECT 'Sunday', '14:00:00', '15:00:00' UNION ALL
     SELECT 'Sunday', '15:00:00', '16:00:00' UNION ALL
     SELECT 'Sunday', '16:00:00', '17:00:00' UNION ALL
-    SELECT 'Sunday', '17:00:00', '18:00:00'
-) AS TimeSlots;
+    SELECT 'Sunday', '17:00:00', '18:00:00'AS TimeSlots;
