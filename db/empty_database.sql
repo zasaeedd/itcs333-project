@@ -1,2 +1,0 @@
--- Placeholder for future database schema.
--- Add your SQL code here.

@@ -1,24 +1,34 @@
 <?php
 session_start();
-require 'connection.php';
+require_once '../config/connect.php';
+$db = connect();
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = test_input($_POST['username']);
-    $password = test_input($_POST['password']);
+    $username = trim($_POST['username']); // Ensure no extra spaces
+    $password = trim($_POST['password']); // Ensure no extra spaces
 
-    $stmt = $db->prepare("SELECT * FROM users WHERE username = :username");
+    // Query Users table
+    $stmt = $db->prepare("SELECT Username, Password FROM Users WHERE Username = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password'])) {
-    $_SESSION['username'] = $user['username'];
+    // Debugging: Check query result
+    if (!$user) {
+        $error = 'No user found with the provided username';
+        var_dump($username, $user);
+        exit;
+    }
+
+    // Validate credentials
+    if (password_verify($password, $user['Password'])) {
+        $_SESSION['username'] = $user['Username'];
         header('Location: main.php');
         exit;
     } else {
-        $error='invalid username or password';
+        $error = 'Invalid username or password';
     }
 }
 
