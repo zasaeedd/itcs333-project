@@ -122,6 +122,6 @@ if (isset($_GET['roomNo'])) {
         const roomTimeslots = <?= json_encode($roomDetails['timeslots']); ?>;
     </script>
     <!-- Link External JavaScript File -->
-    <script src="../js/script.js"></script>
+    <script src="../js/roomscript.js"></script>
 </body>
 </html>
