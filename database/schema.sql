@@ -34,7 +34,21 @@ CREATE TABLE Rooms (
     RoomNo INT UNIQUE NOT NULL,
     Status ENUM('Available', 'Occupied', 'Maintenance') NOT NULL,
     Capacity INT NOT NULL CHECK (Capacity > 0),
-    RoomType ENUM('Classroom', 'Lab', 'Lecture Hall', 'Auditorium') NOT NULL
+    RoomType ENUM('Classroom', 'Lab', 'Lecture Hall', 'Auditorium') NOT NULL,
+    Department ENUM('IS', 'CS', 'CE') NOT NULL,
+    Equipment VARCHAR(255)  -- Additional column for room equipment
+);
+
+-- Create the TimeSlots table
+CREATE TABLE TimeSlots (
+    TimeSlotID INT AUTO_INCREMENT PRIMARY KEY,
+    RoomID INT NOT NULL,
+    StartTime TIME NOT NULL,
+    EndTime TIME NOT NULL,
+    DayOfWeek ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
+    IsAvailable BOOLEAN NOT NULL DEFAULT TRUE,
+    FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID) ON DELETE CASCADE,
+    CHECK (EndTime > StartTime)
 );
 
 -- Create the Bookings table
@@ -44,9 +58,11 @@ CREATE TABLE Bookings (
     RoomID INT NOT NULL,
     StartTime DATETIME NOT NULL,
     EndTime DATETIME NOT NULL,
+    TimeSlotID INT,
     Status ENUM('Pending', 'Confirmed', 'Cancelled', 'Completed') NOT NULL,
     FOREIGN KEY (BookedBy) REFERENCES Users(UserID) ON DELETE CASCADE,
     FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID) ON DELETE CASCADE,
+    FOREIGN KEY (TimeSlotID) REFERENCES TimeSlots(TimeSlotID),
     CHECK (EndTime > StartTime)
 );
 
@@ -65,3 +81,8 @@ CREATE TABLE Analytics_Cache (
     Metric_Value VARCHAR(255) NOT NULL,
     Last_Updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- Update Rooms with department-specific equipment
+UPDATE Rooms SET Equipment = 'Projector, Whiteboard, Chairs, Tables' WHERE Department = 'IS';
+UPDATE Rooms SET Equipment = 'Projector, Whiteboard, Chairs, Tables, Computers, Networked Printers' WHERE Department = 'CS';
+UPDATE Rooms SET Equipment = 'Projector, Whiteboard, Chairs, Tables, Smart Boards, Audio System' WHERE Department = 'CE';
