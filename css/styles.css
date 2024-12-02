@@ -1,9 +1,69 @@
-/* Basic Styling */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+.day-selector button {
+    margin-right: 10px;
+}
+.day-selector {
+    margin-bottom: 20px;
+}
+.timeslot-table {
+    display: none;
 }
 
-h1 {
-    color: #343a40;
-}
+    /* Custom CSS to enhance Bootstrap */
+    .department-heading {
+        font-size: 2rem; /* Increase font size */
+        font-weight: bold; /* Make the text bold */
+        color: #007bff; /* Bootstrap primary color */
+        border-bottom: 3px solid #007bff; /* Add a border under the heading */
+        margin-bottom: 1rem; /* Add spacing below the heading */
+        padding-bottom: 0.5rem; /* Add spacing below the text and the border */
+        letter-spacing: 2px; /* Add spacing between letters for better readability */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+        text-align: center;
+    }
+            .room-card {
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                position: relative;
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .room-card img {
+                width: 100%;
+                height: 180px;
+            }
+            .room-card .room-info {
+                padding: 10px;
+                background-color: white;
+            }
+            .room-card .room-info p {
+                margin: 5px 0;
+                font-size: 16px;
+                font-weight: bold;
+                color: #555;
+            }
+            .room-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+            }
+            .room-card:hover .room-overlay {
+                opacity: 1;
+            }
+            .room-card .room-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                padding-top: 75px;
+                color: white;
+                font-size: 30px;
+                font-weight: bold;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }

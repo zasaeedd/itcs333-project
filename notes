@@ -1,0 +1,27 @@
+Room Browsing and Details Feature:
+
+1. Changes where made to the original database (check add-database-setup branch): 1. Included timeslot table 2. Added equipment
+and department in rooms table + populated the values
+
+2. Fetched rooms details from database (file: 'fetch_data.php')
+
+3. Display all rooms and categorize them into their departments in the main page (file: 'index.php')
+
+4. Search functionality implemented by taking input from user through Get request. The input is then validated by first checking
+it is in the correct format (numerical) and that its not an empty input, then it prepares the database by selecting the room no. 
+that matches the results of the user. If input is invalid it returns an error message. (file: 'index.php')
+
+5. Whenever a room is clicked it displays the room details page which includes all the details including room no., capacity, equipment,
+room type, department (file: 'room_details.php')
+
+6. In addition to the room detials page, the days of the week are displayed. When user clicks a day, it displays all the timeslots and 
+their status. (file: 'script.js')
+
+7. The user is able to navigate back to the home page. Login button is also included that needs to be linked to the login page 
+
+Other notes:
+Make design consistent with other pages
+Make sure design is responsive
+Error handling, make sure website doesn't crash at all times (handled invalid inputs on my part)
+Merge all features and make sure they are coherent
+Test!!!!
