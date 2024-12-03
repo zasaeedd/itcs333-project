@@ -1,22 +1,25 @@
 <?php
-// Reusable DB connection
-function getDatabaseConnection() {
-    return new PDO('mysql:host=localhost;dbname=333project', 'root', '');
-}
+// Include the config file to access the connect() function
+require_once '../../config/connect.php';
 
-// Fetch rooms
-function fetchRooms() {
-    $db = getDatabaseConnection();
-    $stmt = $db->prepare("SELECT RoomID, Status, Capacity, RoomType, Equipment, Department FROM rooms");
+// Use the connect function to get the database connection
+$db = connect();
+
+// Fetch rooms using the database connection
+function fetchRooms()
+{
+    global $db;  // Use the connection from the global scope
+    $stmt = $db->prepare("SELECT RoomID, Status, Capacity, RoomType, Equipment, Department FROM Rooms");
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function fetchRoomDetails($roomNo) {
-    $db = getDatabaseConnection();
+function fetchRoomDetails($roomNo)
+{
+    global $db; // Use the connect() function from config/connect.php
 
     // Fetch room details using RoomNo
-    $stmt = $db->prepare("SELECT * FROM rooms WHERE RoomNo = :RoomNo");
+    $stmt = $db->prepare("SELECT * FROM Rooms WHERE RoomNo = :RoomNo");
     $stmt->bindParam(':RoomNo', $roomNo, PDO::PARAM_STR);
     $stmt->execute();
     $room = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -35,8 +38,9 @@ function fetchRoomDetails($roomNo) {
 }
 
 // Fetch rooms grouped by department (this is for the purpose of separating each department's rooms in website display)
-function fetchRoomsByDepartment($department) {
-    $db = getDatabaseConnection();
+function fetchRoomsByDepartment($department)
+{
+    global $db;  // Use the connect() function from config/connect.php
     $stmt = $db->prepare("SELECT RoomNo, Capacity FROM Rooms WHERE Department = :Department");
     $stmt->bindParam(':Department', $department, PDO::PARAM_STR);
     $stmt->execute();

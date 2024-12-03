@@ -1,53 +1,98 @@
 <?php
-include 'fetch_data.php'; // Database connection and helper functions
+include 'fetch_data.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $bookedBy = $_SESSION['userID']; // Ensure session tracks the logged-in user
-    $roomID = $_POST['roomID'];
-    $startTime = $_POST['startTime'];
-    $endTime = $_POST['endTime'];
-    $timeSlotID = $_POST['timeSlotID'] ?? null; // Optional if you're using time slots
-
-    $result = bookRoom($bookedBy, $roomID, $startTime, $endTime, $timeSlotID);
-
-    if (strpos($result, 'successful') !== false) {
-        header("Location: room_details.php?roomNo=$roomID&success=1");
-    } else {
-        header("Location: room_details.php?roomNo=$roomID&error=" . urlencode($result));
-    }
+session_start();
+if (!isset($_SESSION['username'])) {
+    echo "You need to be logged in to book a room.";
     exit;
 }
 
-function bookRoom($bookedBy, $roomID, $startTime, $endTime, $timeSlotID = null) {
-    $db = getDatabaseConnection();
-    $stmt = $db->prepare("
-        SELECT COUNT(*) FROM Bookings 
-        WHERE RoomID = :roomID 
-          AND Status IN ('Pending', 'Confirmed') 
-          AND ((StartTime < :endTime AND EndTime > :startTime))
-    ");
-    $stmt->execute([
-        ':roomID' => $roomID,
-        ':startTime' => $startTime,
-        ':endTime' => $endTime
-    ]);
+function getRoomIDFromRoomNo($roomNo) {
+    try {
+        $db = connect();
+        $stmt = $db->prepare("SELECT RoomID FROM Rooms WHERE RoomNo = ?");
+        $stmt->execute([$roomNo]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Debug output
+        error_log("RoomNo: " . $roomNo . ", Found RoomID: " . ($result ? $result['RoomID'] : 'not found'));
+        
+        return $result ? $result['RoomID'] : null;
+    } catch (PDOException $e) {
+        error_log("Error fetching RoomID: " . $e->getMessage());
+        return null;
+    }
+}
 
-    if ($stmt->fetchColumn() > 0) {
-        return "Conflict detected! The selected time slot is already booked.";
+function bookRoom() {
+    $jsonData = json_decode(file_get_contents('php://input'), true);
+    
+    // Debug log the incoming data
+    error_log("Received booking data: " . print_r($jsonData, true));
+    
+    $roomNo = $jsonData['roomID']; // This is the RoomNo from the URL
+    $roomID = getRoomIDFromRoomNo($roomNo);
+    
+    error_log("Looking up RoomNo: $roomNo, Found RoomID: $roomID");
+    
+    if (!$roomID) {
+        echo "Invalid room number: $roomNo";
+        exit;
     }
 
-    $insertStmt = $db->prepare("
-        INSERT INTO Bookings (BookedBy, RoomID, StartTime, EndTime, TimeSlotID, Status) 
-        VALUES (:bookedBy, :roomID, :startTime, :endTime, :timeSlotID, 'Pending')
-    ");
-    $insertStmt->execute([
-        ':bookedBy' => $bookedBy,
-        ':roomID' => $roomID,
-        ':startTime' => $startTime,
-        ':endTime' => $endTime,
-        ':timeSlotID' => $timeSlotID
-    ]);
+    $startTime = $jsonData['startTime'];
+    $endTime = $jsonData['endTime'];
+    $timeSlotID = $jsonData['timeSlotID'];
+    $userID = getUserIDByUsername($_SESSION['username']);
 
-    return "Booking successful! Pending approval.";
+    if (!$userID) {
+        echo "User not found";
+        exit;
+    }
+
+    try {
+        $db = connect();
+        $stmt = $db->prepare("INSERT INTO Bookings (BookedBy, RoomID, StartTime, EndTime, TimeSlotID, Status) 
+                             VALUES (:userID, :roomID, :startTime, :endTime, :timeSlotID, 'Pending')");
+        
+        $params = [
+            ':userID' => $userID,
+            ':roomID' => $roomID,
+            ':startTime' => $startTime,
+            ':endTime' => $endTime,
+            ':timeSlotID' => $timeSlotID
+        ];
+        
+        // Debug log the parameters being used
+        error_log("Executing insert with params: " . print_r($params, true));
+        
+        $stmt->execute($params);
+        echo "Booking successful!";
+    } catch (PDOException $e) {
+        echo "Booking failed: " . $e->getMessage();
+        error_log("Booking error: " . $e->getMessage());
+    }
+}
+
+function getUserIDByUsername($username) {
+    try {
+        $db = connect();
+        $stmt = $db->prepare("SELECT UserID FROM Users WHERE Username = ?");
+        $stmt->execute([$username]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Debug output
+        error_log("Username: " . $username . ", Found UserID: " . ($result ? $result['UserID'] : 'not found'));
+        
+        return $result ? $result['UserID'] : null;
+    } catch (PDOException $e) {
+        error_log("Error fetching UserID: " . $e->getMessage());
+        return null;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    bookRoom();
 }
 ?>
+

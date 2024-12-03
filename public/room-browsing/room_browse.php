@@ -29,7 +29,7 @@ if (isset($_GET['query'])) {
 
     // If the input is valid, search for the room
     if ($query) {
-        $db = getDatabaseConnection();
+        $db = connect();  // Use the connect() function from config/connect.php
         $stmt = $db->prepare("SELECT RoomNo, Capacity FROM Rooms WHERE RoomNo = :RoomNo");
         $stmt->bindParam(':RoomNo', $query, PDO::PARAM_STR);
         $stmt->execute();
@@ -84,7 +84,7 @@ $imagePath = '../images/room.jpg';
         <!-- Search Form -->
         <div class="row justify-content-center my-4">
             <div class="col-md-6">
-                <form action="index.php" method="GET" class="input-group">
+                <form action="room_browse.php" method="GET" class="input-group">
                     <input type="text" name="query" class="form-control" placeholder="Enter Room Number..." required>
                     <button type="submit" class="btn btn-success">Search</button>
                 </form>
@@ -108,7 +108,7 @@ $imagePath = '../images/room.jpg';
                                     <p>Capacity: <?= htmlspecialchars($room['Capacity']) ?></p>
                                 </div>
                                 <div class="room-overlay"><?= htmlspecialchars($room['RoomNo']) ?></div>
-                    </a>
+                            </a>
                             </div>
                         </div>
                     <?php endforeach; ?>
