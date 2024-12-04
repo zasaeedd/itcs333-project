@@ -10,22 +10,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password']); // Ensure no extra spaces
 
     // Query Users table
-    $stmt = $db->prepare("SELECT Username, Password FROM Users WHERE Username = :username");
+    $stmt = $db->prepare("SELECT Username, Password, Role FROM Users WHERE Username = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Debugging: Check query result
-    if (!$user) {
-        $error = 'No user found with the provided username';
-        var_dump($username, $user);
-        exit;
-    }
-
     // Validate credentials
     if (password_verify($password, $user['Password'])) {
         $_SESSION['username'] = $user['Username'];
-        header('Location: main.php');
+        $_SESSION['role'] = $user['Role']; 
+        if ($user['Role'] === 'Admin') {
+            header('Location: admin\dashboard.php'); // Adjust the path as needed
+        } else {
+            header('Location: main.php');
+        }
         exit;
     } else {
         $error = 'Invalid username or password';

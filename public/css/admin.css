@@ -1,0 +1,874 @@
+/* ===================================================================
+   1. Reset and Base Styles
+===================================================================*/
+
+/* Box-sizing for all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Base font and background */
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f5f7fa; /* Light mode background */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  color: #333333; /* Light mode text color */
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===================================================================
+   2. Navbar Styling
+===================================================================*/
+
+.navbar {
+  height: 56px;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1020;
+  background-color: #ffffff; /* Light mode navbar background */
+  color: #333333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar .navbar-brand {
+  font-weight: 700;
+  color: #007bff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav-link {
+  color: #333333;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* ===================================================================
+   3. Sidebar Styling
+===================================================================*/
+
+/* Sidebar can be referenced by either class or ID */
+#sidebarMenu {
+  position: fixed;
+  top: 56px; /* Height of the navbar */
+  left: 0;
+  width: 240px;
+  height: calc(100vh - 56px); /* Full height minus navbar */
+  background-color: #ffffff; /* Light mode sidebar background */
+  border-right: 1px solid #dee2e6;
+  padding-top: 1rem;
+  overflow-y: auto;
+  z-index: 1030;
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+#sidebarMenu .nav-link {
+  color: #333333;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#sidebarMenu .nav-link:hover {
+  background-color: #f0f2f5;
+  color: #007bff;
+}
+
+#sidebarMenu .nav-link.active {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+#sidebarMenu .nav-link i {
+  margin-right: 8px;
+  width: 20px;
+  text-align: center;
+}
+
+/* Sidebar Scrollbar Styling */
+#sidebarMenu {
+  scrollbar-width: thin;
+  scrollbar-color: #dee2e6 #ffffff; /* Thumb and track colors */
+}
+
+#sidebarMenu::-webkit-scrollbar {
+  width: 8px;
+}
+
+#sidebarMenu::-webkit-scrollbar-thumb {
+  background-color: #dee2e6; /* Thumb color */
+  border-radius: 4px;
+}
+
+#sidebarMenu::-webkit-scrollbar-track {
+  background-color: #ffffff; /* Track color */
+}
+
+/* ===================================================================
+   4. Main Content Styling
+===================================================================*/
+
+.container-fluid {
+  margin-left: 240px;
+  padding: 56px 20px 20px 20px; /* Top padding accounts for navbar */
+  width: calc(100% - 240px);
+  min-height: calc(100vh - 56px);
+  overflow-x: hidden;
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .container-fluid {
+    margin-left: 0;
+    width: 100%;
+    padding: 56px 15px 15px 15px;
+  }
+}
+
+/* ===================================================================
+   5. Table Styling
+===================================================================*/
+
+/* Table Container for Dashboard Look */
+.table-container {
+  padding: 25px;
+  border-radius: 12px;
+  background-color: #ffffff; /* Light mode background */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-in-out;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.table-caption {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 20px;
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.table th {
+  background: linear-gradient(135deg, #6a11cb, #2575fc); /* Vibrant gradient */
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-bottom: 2px solid #ddd;
+}
+
+.table td {
+  background-color: #ffffff;
+  color: #333333;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Hover and Interaction Effects */
+.table tbody tr:hover {
+  background-color: #f5f5f5;
+  transform: scale(1.01);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+/* Alternating Rows */
+.table tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+/* Buttons for Actions */
+.table-actions .btn {
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  margin-right: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.table-actions .btn-outline-primary {
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.table-actions .btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.table-actions .btn-outline-danger {
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.table-actions .btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+/* ===================================================================
+   6. Status Badges
+===================================================================*/
+
+.status-badge {
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 20px;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.status-badge.pending {
+  background-color: #ffc107; /* Yellow */
+  color: #000000;
+}
+
+.status-badge.confirmed {
+  background-color: #28a745; /* Green */
+  color: #ffffff;
+}
+
+.status-badge.cancelled {
+  background-color: #dc3545; /* Red */
+  color: #ffffff;
+}
+
+.status-badge.completed {
+  background-color: #007bff; /* Blue */
+  color: #ffffff;
+}
+
+/* ===================================================================
+   7. Dark Mode Styles
+===================================================================*/
+
+body.dark-mode {
+  background-color: #1e1e2e; /* Dark mode background */
+  color: #d1d1e0; /* Dark mode text color */
+}
+
+/* Dark Mode Navbar */
+body.dark-mode .navbar {
+  background-color: #232336; /* Dark navbar background */
+  color: #d1d1e0;
+}
+
+/* Dark Mode Navbar Brand */
+body.dark-mode .navbar .navbar-brand {
+  color: #ffffff;
+}
+
+/* Dark Mode Navbar Links */
+body.dark-mode .navbar .nav-link {
+  color: #d1d1e0;
+}
+
+/* Dark Mode Sidebar */
+body.dark-mode #sidebarMenu {
+  background-color: #232336; /* Dark sidebar background */
+  color: #d1d1e0;
+  border-right: 1px solid #444457;
+}
+
+/* Dark Mode Sidebar Links */
+body.dark-mode #sidebarMenu .nav-link {
+  color: #d1d1e0;
+}
+
+body.dark-mode #sidebarMenu .nav-link:hover,
+body.dark-mode #sidebarMenu .nav-link.active {
+  background-color: #33334d;
+  color: #ffffff;
+}
+
+/* Dark Mode Table Container */
+body.dark-mode .table-container {
+  background-color: #1f1f2e; /* Dark mode table container background */
+  color: #e4e4e0; /* Softer text color */
+}
+
+/* Dark Mode Table Caption */
+body.dark-mode .table-caption {
+  color: #ffffff;
+}
+
+/* Dark Mode Table Header */
+body.dark-mode .table th {
+  background: linear-gradient(
+    135deg,
+    #4a4a73,
+    #313152
+  ); /* Dark gradient header */
+  color: #ffffff;
+  border-bottom: 2px solid #3a3a5c;
+}
+
+/* Dark Mode Table Cells */
+body.dark-mode .table td {
+  background-color: #29293f;
+  color: #d7d7df;
+  border-bottom: 1px solid #3a3a5c;
+}
+
+/* Dark Mode Table Row Hover */
+body.dark-mode .table tbody tr:hover {
+  background-color: #33334d;
+  transform: scale(1.01);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+/* Dark Mode Alternating Rows */
+body.dark-mode .table tbody tr:nth-child(odd) {
+  background-color: #2e2e46;
+}
+
+/* ===================================================================
+   8. Dark Mode Footer Styling
+===================================================================*/
+
+/* Dark Mode Footer Styling */
+body.dark-mode footer.footer {
+  background-color: #232336; /* Dark footer background */
+  color: #e5e5e5; /* Lighter text color for better contrast */
+  border-top: 1px solid #444457; /* Subtle border for separation */
+  padding: 1rem 0; /* Consistent padding */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode Footer Links */
+body.dark-mode footer.footer a {
+  color: #d1d1e0; /* Soft link color */
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+body.dark-mode footer.footer a:hover {
+  color: #ffffff; /* Bright color on hover */
+  text-decoration: underline; /* Underline for better UX */
+}
+
+/* Light Mode Footer Links */
+footer.footer a {
+  color: #007bff; /* Primary color for links in light mode */
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+footer.footer a:hover {
+  color: #0056b3; /* Darker shade on hover */
+  text-decoration: underline;
+}
+
+/* ===================================================================
+   9. Dark Mode Settings Form Styling
+===================================================================*/
+
+/* Dark Mode Form Container */
+body.dark-mode .form-container {
+  background-color: #1f1f2e; /* Dark background */
+  color: #d1d1e0; /* Light text */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode Form Labels */
+body.dark-mode .form-container label {
+  color: #d1d1e0;
+}
+
+/* Dark Mode Form Inputs */
+body.dark-mode .form-container .form-control {
+  background-color: #2e2e46; /* Dark input background */
+  color: #d1d1e0; /* Light text */
+  border: 1px solid #444457;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+body.dark-mode .form-container .form-control:focus {
+  background-color: #3a3a5c;
+  color: #ffffff;
+  border-color: #007bff;
+}
+
+/* Dark Mode Form Selects */
+body.dark-mode .form-container .form-select {
+  background-color: #2e2e46;
+  color: #d1d1e0;
+  border: 1px solid #444457;
+}
+
+body.dark-mode .form-container .form-select:focus {
+  background-color: #3a3a5c;
+  color: #ffffff;
+  border-color: #007bff;
+}
+
+/* Dark Mode Form Buttons */
+body.dark-mode .form-container .btn {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .form-container .btn:hover {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+/* Dark Mode Form Textarea */
+body.dark-mode .form-container .form-control textarea {
+  background-color: #2e2e46;
+  color: #d1d1e0;
+  border: 1px solid #444457;
+}
+
+body.dark-mode .form-container .form-control textarea:focus {
+  background-color: #3a3a5c;
+  color: #ffffff;
+  border-color: #007bff;
+}
+
+/* ===================================================================
+   10. Dark Mode Pop-up Cards (Modals) Styling
+===================================================================*/
+
+/* Dark Mode Modal Background */
+body.dark-mode .modal-content {
+  background-color: #1f1f2e; /* Dark background */
+  color: #d1d1e0; /* Light text */
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode Modal Header */
+body.dark-mode .modal-header {
+  border-bottom: 1px solid #444457;
+}
+
+body.dark-mode .modal-header .modal-title {
+  color: #ffffff;
+}
+
+body.dark-mode .modal-header .btn-close {
+  filter: invert(1); /* Makes the close button visible on dark background */
+}
+
+/* Dark Mode Modal Body */
+body.dark-mode .modal-body {
+  background-color: #1f1f2e;
+  color: #d1d1e0;
+}
+
+/* Dark Mode Modal Footer */
+body.dark-mode .modal-footer {
+  border-top: 1px solid #444457;
+  background-color: #1f1f2e;
+}
+
+/* Dark Mode Buttons within Modals */
+body.dark-mode .modal-footer .btn {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .modal-footer .btn:hover {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+/* Dark Mode Forms within Modals */
+body.dark-mode .modal-body .form-control {
+  background-color: #2e2e46;
+  color: #d1d1e0;
+  border: 1px solid #444457;
+}
+
+body.dark-mode .modal-body .form-control:focus {
+  background-color: #3a3a5c;
+  color: #ffffff;
+  border-color: #007bff;
+}
+
+body.dark-mode .modal-body .form-select {
+  background-color: #2e2e46;
+  color: #d1d1e0;
+  border: 1px solid #444457;
+}
+
+body.dark-mode .modal-body .form-select:focus {
+  background-color: #3a3a5c;
+  color: #ffffff;
+  border-color: #007bff;
+}
+
+/* ===================================================================
+   11. Mobile Responsive Enhancements
+===================================================================*/
+
+/* Overlay Styling */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 56px; /* Height of the navbar */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040; /* Below sidebar (1030) and above content (1) */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.overlay.show {
+  display: block;
+}
+
+/* Sidebar Adjustments for Mobile */
+@media (max-width: 768px) {
+  #sidebarMenu {
+    position: fixed;
+    top: 0;
+    left: -240px; /* Hide sidebar off-canvas */
+    height: 100%;
+    width: 240px;
+    background-color: #ffffff;
+    border-right: 1px solid #dee2e6;
+    padding-top: 56px; /* Height of the navbar */
+    overflow-y: auto;
+    z-index: 1050; /* Above overlay */
+    transition: left 0.3s ease-in-out;
+  }
+
+  #sidebarMenu.show {
+    left: 0; /* Slide in sidebar */
+  }
+
+  /* Adjust overlay z-index to be below sidebar */
+  .overlay {
+    z-index: 1040;
+  }
+
+  /* Adjust container padding for mobile */
+  .container-fluid {
+    padding: 1rem;
+  }
+}
+
+/* ===================================================================
+   12. Navbar Element Alignment
+===================================================================*/
+
+/* Ensure brand and toggler are properly aligned */
+.navbar .navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+/* Adjust dark mode toggle and user dropdown */
+.navbar .d-flex.align-items-center {
+  display: flex;
+  align-items: center;
+}
+
+/* ===================================================================
+   13. Sidebar Navigation Links
+===================================================================*/
+
+/* Sidebar icon alignment */
+#sidebarMenu .nav-link i {
+  width: 20px;
+  text-align: center;
+}
+
+/* ===================================================================
+   14. Main Content Adjustments
+===================================================================*/
+
+/* Adjust main content padding on mobile */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 1rem;
+  }
+}
+
+/* ===================================================================
+   15. Smooth Transitions and Animations
+===================================================================*/
+
+/* Apply transition to all interactive elements */
+button,
+.nav-link,
+.form-control,
+.form-select,
+.modal-content,
+#sidebarMenu {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover effects for buttons */
+button.btn:hover,
+.nav-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===================================================================
+   16. Subtle Animations
+===================================================================*/
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===================================================================
+   17. Advanced Responsiveness
+===================================================================*/
+
+@media (max-width: 768px) {
+  .table-container {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .table-caption {
+    font-size: 1.2rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 15px;
+    font-size: 0.85rem;
+  }
+
+  .table-actions .btn {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+}
+
+.overlay {
+  z-index: 1040; /* Bootstrap modals have z-index 1050 */
+}
+
+.modal-backdrop {
+  z-index: 1045; /* Ensure backdrop is below modals but above overlay */
+}
+
+/* ===================================================================
+   18. Top Padding Adjustment for Mobile
+===================================================================*/
+
+@media (max-width: 768px) {
+  .container-fluid {
+    padding-top: 70px; /* Increased from 56px to 70px for better spacing */
+  }
+}
+
+/* ===================================================================
+   19. Reducing Unnecessary Table Columns on Mobile
+===================================================================*/
+
+/* Hide columns 4 and 5 on screens 768px and below */
+@media (max-width: 768px) {
+  /* Hide table headers */
+  .table th:nth-child(4),
+  .table th:nth-child(5) {
+    display: none;
+  }
+
+  /* Hide table data cells */
+  .table td:nth-child(4),
+  .table td:nth-child(5) {
+    display: none;
+  }
+
+  /* Make table container scrollable horizontally */
+  .table-container {
+    overflow-x: auto;
+  }
+
+  /* Optional: Adjust table padding and font size for better readability */
+  .table th,
+  .table td {
+    padding: 15px;
+    font-size: 0.85rem;
+  }
+
+  /* Optional: Adjust action buttons size */
+  .table-actions .btn {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+}
+
+/* ===================================================================
+   20. Responsive Typography
+===================================================================*/
+
+@media (max-width: 576px) {
+  body {
+    font-size: 14px;
+  }
+
+  .navbar .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .table-caption {
+    font-size: 1.2rem;
+  }
+
+  .modal-title {
+    font-size: 1.2rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+  }
+}
+
+/* ===================================================================
+   21. Improved Spacing for Mobile
+===================================================================*/
+
+@media (max-width: 768px) {
+  .table-container {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .modal-body,
+  .modal-footer {
+    padding: 15px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .btn-group .btn {
+    margin-right: 5px;
+  }
+}
+
+/* ===================================================================
+   22. Enhanced Overlay Styling
+===================================================================*/
+
+/* Already defined above */
+
+/* ===================================================================
+   23. Scrollable Modals on Mobile
+===================================================================*/
+
+@media (max-width: 576px) {
+  .modal-dialog {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .modal-content {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+
+  .modal-header,
+  .modal-footer {
+    padding: 15px;
+  }
+
+  .modal-body {
+    padding: 15px;
+    overflow-y: auto;
+  }
+}
+
+/* ===================================================================
+   24. Last Updated DarkMode
+===================================================================*/
+/* Default Light Mode */
+.last-updated {
+  color: #6c757d; /* Default muted text color */
+  transition: color 0.3s ease;
+}
+
+/* Dark Mode Override */
+body.dark-mode .last-updated {
+  color: #d1d1e0; /* Light color for dark mode */
+}
+
+/* Custom Overlay */
+#overlay {
+  display: none;
+  position: fixed;
+  top: 56px; /* Height of the navbar */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1030; /* Below Bootstrap's modal backdrop (1040) */
+  transition: opacity 0.3s ease-in-out;
+}
+
+#overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+/* Bootstrap Modal Backdrop */
+.modal-backdrop {
+  z-index: 1040; /* Ensure it's above the custom overlay */
+}
+
+/* Bootstrap Modal */
+.modal {
+  z-index: 1050; /* Above the modal backdrop */
+}
