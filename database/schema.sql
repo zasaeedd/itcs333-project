@@ -25,7 +25,8 @@ CREATE TABLE Users (
     Username VARCHAR(50) UNIQUE NOT NULL,
     Email VARCHAR(254) UNIQUE NOT NULL,
     Password VARCHAR(255) NOT NULL,  -- Passwords are hashed
-    Role ENUM('User', 'Admin') NOT NULL DEFAULT 'User'
+    Role ENUM('User', 'Admin') NOT NULL DEFAULT 'User',
+    ImagePath VARCHAR(255) DEFAULT 'images/default-profile.jpg'
 );
 
 -- Create the Rooms table

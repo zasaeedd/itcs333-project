@@ -4,24 +4,53 @@ require_once '../../config/connect.php';
 // Start session
 session_start();
 
-// Check if the user is logged in (replace with your actual authentication logic)
+// Check if the user is logged in
 if (!isset($_SESSION['username'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$user_id = $_SESSION['username']; // Get the logged-in user's ID
+$user_id = $_SESSION['username'];
 
 // Fetch user details from the database
-    $db = connect();
-    $stmt = $db->prepare("SELECT FirstName, LastName, Username, Email FROM Users WHERE Username = ?");
-    $stmt->execute([$user_id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+$db = connect();
+$stmt = $db->prepare("SELECT FirstName, LastName, Username, Email, ImagePath FROM Users WHERE Username = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user) {
-        die("User not found.");
+if (!$user) {
+    die("User not found.");
+}
+
+// Handle profile picture upload
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) {
+    $file = $_FILES['profile_picture'];
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    $maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (in_array($file['type'], $allowedTypes) && $file['size'] <= $maxSize) {
+        $uploadDir = '../images/profile-pictures/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $fileName = uniqid() . '_' . basename($file['name']);
+        $targetPath = $uploadDir . $fileName;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            // Update database with new image path
+            $stmt = $db->prepare("UPDATE Users SET ImagePath = ? WHERE Username = ?");
+            $relativePath = 'images/profile-pictures/' . $fileName;
+            $stmt->execute([$relativePath, $user_id]);
+            
+            // Update the user array to show new image immediately
+            $user['ImagePath'] = $relativePath;
+            
+            header("Location: profile.php?success=profile_updated");
+            exit();
+        }
     }
-
+}
 ?>
 
 <!DOCTYPE html>
@@ -36,12 +65,19 @@ $user_id = $_SESSION['username']; // Get the logged-in user's ID
     <div class="profile-container">
         <h1>User Profile</h1>
 
-        <!-- Display User Details -->
+        <!-- Profile Picture Section -->
         <div class="profile-picture-container">
-            <img src="default-profile.png" alt="Profile Picture" class="profile-picture">
+            <img src="../<?= htmlspecialchars($user['ImagePath']) ?>" alt="Profile Picture" class="profile-picture">
+            
+            <!-- Separate form for profile picture upload -->
+            <form action="profile.php" method="POST" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" class="file-input">
+                <button type="submit" class="upload-btn">Update Picture</button>
+            </form>
         </div>
 
-        <form action="update_profile.php" method="POST">
+        <!-- User Details Form -->
+        <form action="update_profile.php" method="POST" class="details-form">
             <label for="first_name">First Name:</label>
             <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($user['FirstName']) ?>" required>
 
@@ -57,5 +93,36 @@ $user_id = $_SESSION['username']; // Get the logged-in user's ID
             <button type="submit">Update Profile</button>
         </form>
     </div>
+
+    <style>
+        .profile-picture-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .upload-form {
+            margin: 10px 0;
+        }
+        .file-input {
+            margin-bottom: 10px;
+        }
+        .upload-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .upload-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
 </body>
 </html>
