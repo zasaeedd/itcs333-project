@@ -1,21 +1,21 @@
 <?php
-require_once '../config/connect.php'; // Database connection
+require_once '../../config/connect.php';
 
 // Start session
 session_start();
 
 // Check if the user is logged in (replace with your actual authentication logic)
-if (!isset($_SESSION['Username'])) {
-    header("Location: login.php");
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login.php");
     exit();
 }
 
-$user_id = $_SESSION['Username']; // Get the logged-in user's ID
+$user_id = $_SESSION['username']; // Get the logged-in user's ID
 
 // Fetch user details from the database
     $db = connect();
-    $stmt = $db->prepare("SELECT FirstName, LastName, Username, Email FROM Users WHERE Username = :username");
-    $stmt->execute(['Username' => $user_id]);
+    $stmt = $db->prepare("SELECT FirstName, LastName, Username, Email FROM Users WHERE Username = ?");
+    $stmt->execute([$user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
