@@ -92,6 +92,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
 
             <button type="submit">Update Profile</button>
         </form>
+
+        <!-- Add this right after the Update Profile button -->
+        <div class="text-end mt-3">
+            <a href="profile_page.php" class="btn btn-outline-primary">
+                <img src="../images/bxs-exit.svg" alt="Profile" class="profile-back-icon">
+                Back to Profile
+            </a>
+        </div>
     </div>
 
     <style>
