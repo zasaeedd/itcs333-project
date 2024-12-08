@@ -41,13 +41,17 @@ if (isset($_GET['roomNo'])) {
                     <a href="room_browse.php" class="btn btn-outline-primary me-2">Home</a>
                     <?php if (isset($_SESSION['username'])): 
                         // Fetch user's profile image
-                        $stmt = $db->prepare("SELECT ImagePath FROM Users WHERE Username = ?");
+                        $stmt = $db->prepare("SELECT ProfileImage, ImageType FROM Users WHERE Username = ?");
                         $stmt->execute([$_SESSION['username']]);
                         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $imagePath = $user['ImagePath'] ?? 'images/default-profile.jpg';
+                        
+                        // Create data URL for the image
+                        $imageSource = $user['ProfileImage'] ? 
+                            "data:" . $user['ImageType'] . ";base64," . base64_encode($user['ProfileImage']) : 
+                            "../images/default-profile.jpg";
                     ?>
                         <a href="../profile-management/profile_page.php" class="nav-link me-2">
-                            <img src="../<?= htmlspecialchars($imagePath) ?>" 
+                            <img src="<?= htmlspecialchars($imageSource) ?>" 
                                  alt="Profile" 
                                  class="rounded-circle profile-icon"
                                  style="width: 32px; height: 32px; object-fit: cover;">

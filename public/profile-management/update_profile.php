@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Redirect back to profile page with success message
-        header("Location: profile.php?success=1");
+        header("Location: profile_page.php?success=1");
         exit();
     } catch (PDOException $e) {
         // Log error and redirect with failure message

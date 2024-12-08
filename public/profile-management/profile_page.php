@@ -9,9 +9,14 @@ if (!isset($_SESSION['username'])) {
 
 // Fetch user details
 $db = connect();
-$stmt = $db->prepare("SELECT UserID, FirstName, LastName, Username, Email, ImagePath FROM Users WHERE Username = ?");
+$stmt = $db->prepare("SELECT UserID, FirstName, LastName, Username, Email, ProfileImage, ImageType FROM Users WHERE Username = ?");
 $stmt->execute([$_SESSION['username']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Create data URL for the image
+$imageSource = $user['ProfileImage'] ? 
+    "data:" . $user['ImageType'] . ";base64," . base64_encode($user['ProfileImage']) : 
+    "../images/default-profile.jpg";
 
 // Fetch user's bookings
 $bookingStmt = $db->prepare("
@@ -47,8 +52,8 @@ $bookings = $bookingStmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <div class="navbar-nav align-items-center">
                     <a href="../room-browsing/room_browse.php" class="btn btn-outline-primary me-2">Home</a>
-                    <a href="profile.php" class="nav-link me-2">
-                        <img src="../<?= htmlspecialchars($user['ImagePath']) ?>" 
+                    <a href="profile_page.php" class="nav-link me-2">
+                        <img src="<?= htmlspecialchars($imageSource) ?>" 
                              alt="Profile" 
                              class="rounded-circle profile-icon"
                              style="width: 32px; height: 32px; object-fit: cover;">
@@ -75,7 +80,7 @@ $bookings = $bookingStmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Profile Information -->
         <div class="row mb-5">
             <div class="col-md-4 text-center">
-                <img src="../<?= htmlspecialchars($user['ImagePath']) ?>" 
+                <img src="<?= htmlspecialchars($imageSource) ?>" 
                      alt="Profile Picture" 
                      class="rounded-circle mb-3"
                      style="width: 200px; height: 200px; object-fit: cover;">

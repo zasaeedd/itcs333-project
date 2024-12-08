@@ -14,7 +14,7 @@ $user_id = $_SESSION['username'];
 
 // Fetch user details from the database
 $db = connect();
-$stmt = $db->prepare("SELECT FirstName, LastName, Username, Email, ImagePath FROM Users WHERE Username = ?");
+$stmt = $db->prepare("SELECT FirstName, LastName, Username, Email, ProfileImage, ImageType FROM Users WHERE Username = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -29,28 +29,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
     $maxSize = 5 * 1024 * 1024; // 5MB
 
     if (in_array($file['type'], $allowedTypes) && $file['size'] <= $maxSize) {
-        $uploadDir = '../images/profile-pictures/';
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        $fileName = uniqid() . '_' . basename($file['name']);
-        $targetPath = $uploadDir . $fileName;
-
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Update database with new image path
-            $stmt = $db->prepare("UPDATE Users SET ImagePath = ? WHERE Username = ?");
-            $relativePath = 'images/profile-pictures/' . $fileName;
-            $stmt->execute([$relativePath, $user_id]);
+        try {
+            // Read the image file content
+            $imageData = file_get_contents($file['tmp_name']);
             
-            // Update the user array to show new image immediately
-            $user['ImagePath'] = $relativePath;
+            // Update database with BLOB data
+            $stmt = $db->prepare("UPDATE Users SET ProfileImage = ?, ImageType = ? WHERE Username = ?");
+            $stmt->execute([$imageData, $file['type'], $user_id]);
+            
+            // Refresh user data
+            $stmt = $db->prepare("SELECT ProfileImage, ImageType FROM Users WHERE Username = ?");
+            $stmt->execute([$user_id]);
+            $user = array_merge($user, $stmt->fetch(PDO::FETCH_ASSOC));
             
             header("Location: profile.php?success=profile_updated");
             exit();
+        } catch (PDOException $e) {
+            $error = "Failed to upload image: " . $e->getMessage();
         }
+    } else {
+        $error = "Invalid file type or size too large";
     }
 }
+
+// Create data URL for the image
+$imageSource = $user['ProfileImage'] ? 
+    "data:" . $user['ImageType'] . ";base64," . base64_encode($user['ProfileImage']) : 
+    "../images/default-profile.jpg";
 ?>
 
 <!DOCTYPE html>
@@ -67,7 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
 
         <!-- Profile Picture Section -->
         <div class="profile-picture-container">
-            <img src="../<?= htmlspecialchars($user['ImagePath']) ?>" alt="Profile Picture" class="profile-picture">
+            <img src="<?= htmlspecialchars($imageSource) ?>" 
+                 alt="Profile Picture" 
+                 class="profile-picture">
             
             <!-- Separate form for profile picture upload -->
             <form action="profile.php" method="POST" enctype="multipart/form-data" class="upload-form">
@@ -93,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
             <button type="submit">Update Profile</button>
         </form>
 
-        <!-- Add this right after the Update Profile button -->
+        <!-- Back to Profile button -->
         <div class="text-end mt-3">
             <a href="profile_page.php" class="btn btn-outline-primary">
                 <img src="../images/bxs-exit.svg" alt="Profile" class="profile-back-icon">
@@ -101,36 +108,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
             </a>
         </div>
     </div>
-
-    <style>
-        .profile-picture-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-picture {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-        .upload-form {
-            margin: 10px 0;
-        }
-        .file-input {
-            margin-bottom: 10px;
-        }
-        .upload-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .upload-btn:hover {
-            background-color: #45a049;
-        }
-    </style>
 </body>
 </html>
