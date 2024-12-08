@@ -115,6 +115,7 @@ $bookings = $bookingStmt->fetchAll(PDO::FETCH_ASSOC);
                                     <th>Start Time</th>
                                     <th>End Time</th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -132,6 +133,19 @@ $bookings = $bookingStmt->fetchAll(PDO::FETCH_ASSOC);
                                             <span class="badge bg-<?= $booking['Status'] === 'Confirmed' ? 'success' : 'warning' ?>">
                                                 <?= htmlspecialchars($booking['Status']) ?>
                                             </span>
+                                        </td>
+                                        <td>
+                                            <form action="../room-browsing/book_room.php" method="POST" style="display: inline;">
+                                                <input type="hidden" name="booking_id" value="<?= $booking['BookingID'] ?>">
+                                                <input type="hidden" name="action" value="delete">
+                                                <button type="submit" class="btn btn-link p-0" 
+                                                        onclick="return confirm('Are you sure you want to delete this booking?');">
+                                                    <img src="../images/bxs-trash.svg" 
+                                                         alt="Delete" 
+                                                         class="delete-icon"
+                                                         style="width: 20px; height: 20px;">
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

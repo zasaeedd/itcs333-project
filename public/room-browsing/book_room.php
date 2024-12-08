@@ -91,6 +91,51 @@ function getUserIDByUsername($username) {
     }
 }
 
+function deleteBooking($bookingId, $username) {
+    try {
+        $db = connect();
+        
+        // First verify that this booking belongs to the user
+        $stmt = $db->prepare("
+            SELECT b.BookingID 
+            FROM Bookings b 
+            JOIN Users u ON b.BookedBy = u.UserID 
+            WHERE b.BookingID = ? AND u.Username = ?
+        ");
+        $stmt->execute([$bookingId, $username]);
+        
+        if ($stmt->fetch()) {
+            // Delete the booking
+            $deleteStmt = $db->prepare("DELETE FROM Bookings WHERE BookingID = ?");
+            $deleteStmt->execute([$bookingId]);
+            return true;
+        }
+        return false;
+    } catch (PDOException $e) {
+        error_log("Delete Booking Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Handle POST request for booking deletion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    session_start();
+    
+    if (!isset($_SESSION['username']) || !isset($_POST['booking_id'])) {
+        header("Location: ../profile-management/profile_page.php?error=invalid_request");
+        exit();
+    }
+
+    $success = deleteBooking($_POST['booking_id'], $_SESSION['username']);
+    
+    if ($success) {
+        header("Location: ../profile-management/profile_page.php?success=booking_deleted");
+    } else {
+        header("Location: ../profile-management/profile_page.php?error=delete_failed");
+    }
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     bookRoom();
 }
