@@ -14,10 +14,10 @@ This project is a responsive web-based room booking system for the IT College. I
 
 ## Key Features:
 - User Registration and Login
+- Profile Management with Image Upload
 - Room Browsing and Booking
+- Booking Management (View/Delete)
 - Admin Panel
-- Reporting and Analytics **(Optional)**
-- Comment System **(Optional)**
 
 ## File Structure:
 - **ITCS333-PROJECT/**
@@ -26,69 +26,98 @@ This project is a responsive web-based room booking system for the IT College. I
   - `index.html`
   - **css/**
     - `styles.css`
+    - `roomstyle.css`
+    - `editprofile.css`
   - **js/**
     - `scripts.js`
   - **db/**
-    - `empty_database.sql`
+    - `schema.sql`
+    - **seed/**
+      - `users.sql`
+      - `rooms.sql`
+  - **public/**
+    - **auth/**
+      - `login.php`
+      - `register.php`
+    - **room-browsing/**
+      - `room_browse.php`
+      - `room_details.php`
+      - `book_room.php`
+    - **profile-management/**
+      - `profile_page.php`
+      - `profile.php`
+      - `update_profile.php`
+    - **images/**
+      - `bxs-exit.svg`
+      - `bxs-user.svg`
+      - `bxs-trash.svg`
+      - `default-profile.jpg`
 
 ## Installation:
 - **Clone the repository**:  
-  Open a terminal and run the following command to clone the repository to your local machine:
   ```bash
   git clone https://github.com/zasaeedd/itcs333-project.git
   ```
 
-- **Navigate into the project directory**:  
-  After cloning, move into the project directory:
-  ```bash
-  cd itcs333-project
-  ```
+- **Set up the database**:
+  1. Create a new MySQL database
+  2. Import `db/schema.sql`
+  3. Import seed files from `db/seed/`
 
-- **Set up an Apache server using XAMPP (Windows)**:
-  - **Download and install XAMPP**:  
-    Download XAMPP from [https://www.apachefriends.org/index.html](https://www.apachefriends.org) and follow the installation instructions.
-  - **Start Apache in XAMPP**:  
-    Open the XAMPP Control Panel and click the **Start** button next to Apache.
-  - **Move project to `htdocs`**:  
-    Copy the `itcs333-project` folder into the `htdocs` folder, located in the XAMPP installation directory (usually `C:\xampp\htdocs`).
-  - **Access the project in your browser**:  
-    Open your browser and go to:
-    ```
-    http://localhost/itcs333-project
-    ```
-    This will load the project.
+- **Configure the application**:
+  1. Copy `config.example.php` to `config.php`
+  2. Update database credentials in `config.php`
 
+- **Set up an Apache server using XAMPP**:
+  1. Install XAMPP
+  2. Place project in `htdocs` folder
+  3. Start Apache and MySQL services
+  4. Access via `http://localhost/itcs333-project`
 
+## Development Guidelines:
+- **Database**:
+  - Use prepared statements
+  - Handle BLOB data for images
+  - Maintain referential integrity
+
+- **Security**:
+  - Sanitize all user inputs
+  - Use password hashing
+  - Implement session management
+  - Validate file uploads
+
+- **Code Style**:
+  - Use meaningful variable names
+  - Comment complex logic
+  - Follow PSR-12 standards
+  - Keep functions focused
 
 ## Contribution Guidelines:
 - **Use branches for each feature**:  
-  - Create a new branch for each feature you work on:
-    ```bash
-    git checkout -b feature-name
-    ```
-    Example:
-    ```bash
-    git checkout -b registration-feature
-    ```
+  ```bash
+  git checkout -b feature-name
+  ```
 
 - **Commit your changes**:  
-  - After making changes, commit them with a clear message:
-    ```bash
-    git add .
-    git commit -m "Add registration functionality"
-    ```
+  ```bash
+  git add .
+  git commit -m "Description of changes"
+  ```
 
 - **Push your branch**:  
-  - Push your branch to GitHub:
-    ```bash
-    git push origin feature-name
-    ```
+  ```bash
+  git push origin feature-name
+  ```
 
-- **Create a Pull Request (PR)**:  
-  - Go to GitHub and create a Pull Request (PR) to merge your changes into the main branch.
+- **Create a Pull Request**:
+  1. Push to GitHub
+  2. Create PR with description
+  3. Wait for review
+  4. Address feedback
 
-- **Test your code**:  
-  - Test the feature on your local machine to make sure it works as expected and does not affect other parts of the system.
-
-- **Review and approve**:  
-  - Team members review the PR on GitHub. Once approved, merge it into the main branch.
+## Testing:
+- Test all CRUD operations
+- Verify image uploads
+- Check booking conflicts
+- Validate form submissions
+- Test responsive design
