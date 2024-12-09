@@ -1,5 +1,6 @@
 <?php
 include 'fetch_data.php';
+session_start();
 
 // Check if Room no. parameter is set in the URL query string
 if (isset($_GET['roomNo'])) {
@@ -24,24 +25,59 @@ if (isset($_GET['roomNo'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/styles.css" rel="stylesheet">
+    <link href="../css/roomstyle.css" rel="stylesheet">
 </head>
 <body class="bg-light">
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
             <a class="navbar-brand">IT College Room Booking</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <div class="navbar-nav">
+                <div class="navbar-nav align-items-center">
                     <a href="room_browse.php" class="btn btn-outline-primary me-2">Home</a>
-                    <a href="../login.php" class="btn btn-primary">Login</a>
+                    <?php if (isset($_SESSION['username'])): 
+                        // Fetch user's profile image
+                        $stmt = $db->prepare("SELECT ProfileImage, ImageType FROM Users WHERE Username = ?");
+                        $stmt->execute([$_SESSION['username']]);
+                        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                        
+                        // Create data URL for the image
+                        $imageSource = $user['ProfileImage'] ? 
+                            "data:" . $user['ImageType'] . ";base64," . base64_encode($user['ProfileImage']) : 
+                            "../images/default-profile.jpg";
+                    ?>
+                        <a href="../profile-management/profile_page.php" class="nav-link me-2">
+                            <img src="<?= htmlspecialchars($imageSource) ?>" 
+                                 alt="Profile" 
+                                 class="rounded-circle profile-icon"
+                                 style="width: 32px; height: 32px; object-fit: cover;">
+                        </a>
+                        <a href="../logout.php" class="nav-link">
+                            <img src="../images/bxs-exit.svg" 
+                                 alt="Logout" 
+                                 class="logout-icon"
+                                 style="width: 24px; height: 24px;">
+                        </a>
+                    <?php else: ?>
+                        <a href="../login.php" class="btn btn-primary">Login</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <h2 class="text-primary mb-4">Room Details: <?= htmlspecialchars($roomDetails['room']['RoomNo']) ?></h2>
+                <hr class="mb-4">
+            </div>
+        </div>
+    </div>
 
     <div class="container mt-5">
         <div class="card shadow">
@@ -64,24 +100,6 @@ if (isset($_GET['roomNo'])) {
                         <p><strong>Equipment:</strong> <?= htmlspecialchars($roomDetails['room']['Equipment'] ?: 'None') ?></p>
                     </div>
                 </div>
-
-                <!-- Booking Form -->
-                <h4 class="mt-4">Book This Room</h4>
-                <form id="bookingForm" action="book_room.php" method="POST">
-                    <input type="hidden" name="roomID" value="<?= htmlspecialchars($roomDetails['room']['RoomID']) ?>">
-                    <label for="startTime">Start Time:</label>
-                    <input type="datetime-local" name="startTime" required>
-                    <label for="endTime">End Time:</label>
-                    <input type="datetime-local" name="endTime" required>
-                    <button type="submit" class="btn btn-success mt-3">Book Room</button>
-                </form>
-
-                <?php if (isset($_GET['success'])): ?>
-                    <p class="alert alert-success mt-3">Booking submitted successfully!</p>
-                <?php elseif (isset($_GET['error'])): ?>
-                    <p class="alert alert-danger mt-3"><?= htmlspecialchars($_GET['error']) ?></p>
-                <?php endif; ?>
-
                 <!-- Day Selector -->
                 <h4 class="mt-4">Select a Day</h4>
                 <div class="day-selector">
@@ -111,7 +129,7 @@ if (isset($_GET['roomNo'])) {
 
                 <!-- Back Button -->
                 <div class="text-center mt-4">
-                    <a href="index.php" class="btn btn-sm btn-secondary">Back to Rooms</a>
+                    <a href="room_browse.php" class="btn btn-sm btn-secondary">Back to Rooms</a>
                 </div>
             </div>
         </div>

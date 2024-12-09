@@ -260,3 +260,8 @@ document.getElementById('bookingModal').addEventListener('hidden.bs.modal', func
       modalBackdrop.parentNode.removeChild(modalBackdrop);
   }
 });
+
+document.getElementById('selectAll').addEventListener('change', function() {
+  const checkboxes = document.querySelectorAll('input[name="selected_bookings[]"]');
+  checkboxes.forEach(cb => cb.checked = this.checked);
+});

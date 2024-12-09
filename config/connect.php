@@ -4,11 +4,10 @@
 // Include the configuration file that contains database credentials
 require_once __DIR__ . '/config.php';
 
-
 // Connects to the database using PDO and returns the connection instance.
 function connect() {
     // Create the DSN (Data Source Name) for the database connection
-    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8";
+    $dsn = "mysql:unix_socket=/opt/lampp/var/mysql/mysql.sock;dbname=" . DB_NAME . ";charset=utf8";
 
     try {
         // Initialize a new PDO instance with the DSN, username, and password

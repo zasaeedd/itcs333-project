@@ -1,11 +1,10 @@
 <?php 
 session_start();
 
-
 if (!isset($_SESSION['username'])) {
-    echo'login first';
+    echo 'Login first';
+} else {
+    header("Location: room-browsing/room_browse.php");
+    exit(); 
 }
-
-else
-echo"this is the main page";
 ?>

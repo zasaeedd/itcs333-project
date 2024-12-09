@@ -15,18 +15,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Validate credentials
-    if (password_verify($password, $user['Password'])) {
-        $_SESSION['username'] = $user['Username'];
-        $_SESSION['role'] = $user['Role']; 
-        if ($user['Role'] === 'Admin') {
-            header('Location: admin\dashboard.php'); // Adjust the path as needed
+    if ($user) { 
+        // Validate credentials
+        if (password_verify($password, $user['Password'])) {
+            $_SESSION['username'] = $user['Username'];
+            $_SESSION['role'] = $user['Role']; 
+            if ($user['Role'] === 'Admin') {
+                header('Location: admin/dashboard.php'); 
+            } else {
+                header('Location: main.php');
+            }
+            exit;
         } else {
-            header('Location: main.php');
+            $error = 'Invalid username or password';
         }
-        exit;
     } else {
-        $error = 'Invalid username or password';
+        $error = 'Invalid username or password'; 
     }
 }
 
@@ -38,6 +42,7 @@ function test_input($data)
     return $data;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>

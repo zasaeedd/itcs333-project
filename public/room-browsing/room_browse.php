@@ -1,5 +1,6 @@
 <?php
 include 'fetch_data.php';
+session_start();
 
 // Sanitize and validate search query
 function sanitizeAndValidateInput($input) {
@@ -29,7 +30,7 @@ if (isset($_GET['query'])) {
 
     // If the input is valid, search for the room
     if ($query) {
-        $db = getDatabaseConnection();
+        $db = connect();  // Use the connect() function from config/connect.php
         $stmt = $db->prepare("SELECT RoomNo, Capacity FROM Rooms WHERE RoomNo = :RoomNo");
         $stmt->bindParam(':RoomNo', $query, PDO::PARAM_STR);
         $stmt->execute();
@@ -67,14 +68,40 @@ $imagePath = '../images/room.jpg';
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
-            <a class="navbar-brand"> IT College Room Booking</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand">IT College Room Booking</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <div class="navbar-nav">
+                <div class="navbar-nav align-items-center">
                     <a href="room_browse.php" class="btn btn-outline-primary me-2">Home</a>
-                    <a href="../login.php" class="btn btn-primary">Login</a>
+                    <?php if (isset($_SESSION['username'])): 
+                        // Fetch user's profile image
+                        $stmt = $db->prepare("SELECT ProfileImage, ImageType FROM Users WHERE Username = ?");
+                        $stmt->execute([$_SESSION['username']]);
+                        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                        
+                        // Create data URL for the image
+                        $imageSource = $user['ProfileImage'] ? 
+                            "data:" . $user['ImageType'] . ";base64," . base64_encode($user['ProfileImage']) : 
+                            "../images/default-profile.jpg";
+                    ?>
+                        <a href="../profile-management/profile_page.php" class="nav-link me-2">
+                            <img src="<?= htmlspecialchars($imageSource) ?>" 
+                                 alt="Profile" 
+                                 class="rounded-circle profile-icon"
+                                 style="width: 32px; height: 32px; object-fit: cover;">
+                        </a>
+                        <a href="../logout.php" class="nav-link">
+                            <img src="../images/bxs-exit.svg" 
+                                 alt="Logout" 
+                                 class="logout-icon"
+                                 style="width: 24px; height: 24px;">
+                        </a>
+                    <?php else: ?>
+                        <a href="../login.php" class="btn btn-primary">Login</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -84,7 +111,7 @@ $imagePath = '../images/room.jpg';
         <!-- Search Form -->
         <div class="row justify-content-center my-4">
             <div class="col-md-6">
-                <form action="index.php" method="GET" class="input-group">
+                <form action="room_browse.php" method="GET" class="input-group">
                     <input type="text" name="query" class="form-control" placeholder="Enter Room Number..." required>
                     <button type="submit" class="btn btn-success">Search</button>
                 </form>
@@ -102,13 +129,13 @@ $imagePath = '../images/room.jpg';
                         <div class="col">
                             <div class="room-card">
                             <a href="room_details.php?roomNo=<?= htmlspecialchars($room['RoomNo']) ?>" class="text-decoration-none">
-                                <img src="<?= htmlspecialchars($imagePath) ?>" alt="Room Image">
+                                <img src="<?= htmlspecialchars('../images/room.jpg') ?>" alt="Room Image">
                                 <div class="room-info">
                                     <p>Room: <?= htmlspecialchars($room['RoomNo']) ?></p>
                                     <p>Capacity: <?= htmlspecialchars($room['Capacity']) ?></p>
                                 </div>
                                 <div class="room-overlay"><?= htmlspecialchars($room['RoomNo']) ?></div>
-                    </a>
+                            </a>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -124,7 +151,7 @@ $imagePath = '../images/room.jpg';
                     <div class="col">
                         <div class="room-card">
                         <a href="room_details.php?roomNo=<?= htmlspecialchars($room['RoomNo']) ?>" class="text-decoration-none">
-                            <img src="<?= htmlspecialchars($imagePath) ?>" alt="Room Image">
+                            <img src="<?= htmlspecialchars('../images/room.jpg') ?>" alt="Room Image">
                             <div class="room-info">
                                 <p>Room: <?= htmlspecialchars($room['RoomNo']) ?></p>
                                 <p>Capacity: <?= htmlspecialchars($room['Capacity']) ?></p>
@@ -145,7 +172,7 @@ $imagePath = '../images/room.jpg';
                     <div class="col">
                         <div class="room-card">
                         <a href="room_details.php?roomNo=<?= htmlspecialchars($room['RoomNo']) ?>" class="text-decoration-none">
-                            <img src="<?= htmlspecialchars($imagePath) ?>" alt="Room Image">
+                            <img src="<?= htmlspecialchars('../images/room.jpg') ?>" alt="Room Image">
                             <div class="room-info">
                                 <p>Room: <?= htmlspecialchars($room['RoomNo']) ?></p>
                                 <p>Capacity: <?= htmlspecialchars($room['Capacity']) ?></p>
@@ -166,7 +193,7 @@ $imagePath = '../images/room.jpg';
                     <div class="col">
                         <div class="room-card">
                         <a href="room_details.php?roomNo=<?= htmlspecialchars($room['RoomNo']) ?>" class="text-decoration-none">
-                            <img src="<?= htmlspecialchars($imagePath) ?>" alt="Room Image">
+                            <img src="<?= htmlspecialchars('../images/room.jpg') ?>" alt="Room Image">
                             <div class="room-info">
                                 <p>Room: <?= htmlspecialchars($room['RoomNo']) ?></p>
                                 <p>Capacity: <?= htmlspecialchars($room['Capacity']) ?></p>

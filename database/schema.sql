@@ -19,13 +19,15 @@ FLUSH PRIVILEGES;
 
 -- Create the Users table
 CREATE TABLE Users (
-    UserID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT PRIMARY KEY AUTO_INCREMENT,
+    Username VARCHAR(50) UNIQUE NOT NULL,
+    Password VARCHAR(255) NOT NULL,
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
-    Username VARCHAR(50) UNIQUE NOT NULL,
-    Email VARCHAR(254) UNIQUE NOT NULL,
-    Password VARCHAR(255) NOT NULL,  -- Passwords are hashed
-    Role ENUM('User', 'Admin') NOT NULL DEFAULT 'User'
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    ProfileImage LONGBLOB,
+    ImageType VARCHAR(50),
+    Role ENUM('admin', 'user') DEFAULT 'user'
 );
 
 -- Create the Rooms table
