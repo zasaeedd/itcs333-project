@@ -42,33 +42,33 @@ $bookings = $bookingStmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body class="bg-light">
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-        <div class="container">
-            <a class="navbar-brand">IT College Room Booking</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+    <nav class="navbar navbar-dark bg-dark shadow-sm fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand text-primary">IT College Room Booking</a>
+            <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <div class="navbar-nav align-items-center">
-                    <a href="../room-browsing/room_browse.php" class="btn btn-outline-primary me-2">Home</a>
-                    <a href="profile_page.php" class="nav-link me-2">
-                        <img src="<?= htmlspecialchars($imageSource) ?>" 
-                             alt="Profile" 
-                             class="rounded-circle profile-icon"
-                             style="width: 32px; height: 32px; object-fit: cover;">
-                    </a>
-                    <a href="../logout.php" class="nav-link">
-                        <img src="../images/bxs-exit.svg" 
-                             alt="Logout" 
-                             class="logout-icon"
-                             style="width: 24px; height: 24px;">
-                    </a>
+            </button> -->
+            <!-- <div class="collapse navbar-collapse justify-content-end" id="navbarNav"> -->
+
+            <div class="nav-buttons">
+                    <a href="room_browse.php" class="btn home-btn me-2">Home</a>
+                        <a href="../profile-management/profile_page.php" class="btn nav-btn me-2">
+                            <img src="<?= htmlspecialchars($imageSource) ?>" 
+                                 alt="Profile" 
+                                 class="rounded-circle profile-icon"
+                                 style="width: 32px; height: 32px; object-fit: cover;">
+                        </a>
+                        <a href="../logout.php" class="btn nav-btn">
+                            <img src="../images/bxs-exit.svg" 
+                                 alt="Logout" 
+                                 class="logout-icon"
+                                 style="width: 24px; height: 24px;">
+                        </a>
                 </div>
             </div>
         </div>
     </nav>
-
     <div class="container mt-4">
         <div class="row">
             <div class="col">

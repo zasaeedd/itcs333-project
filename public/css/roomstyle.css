@@ -1,3 +1,59 @@
+body{
+    padding: 70px;
+}
+
+.nav-btn {
+    color: white;
+    border: none;
+}
+
+.nav-btn:hover {
+    color: #ccc;
+}
+
+.home-btn {
+    color: #007bff;
+    border: none;
+}
+
+.home-btn:hover {
+    color: #0056b3;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+@media (max-width: 576px) {
+    .nav-buttons {
+        font-size: 0.9rem;
+    }
+    .nav-buttons .btn {
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+.timeslot-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    .timeslot-table {
+        min-width: 600px; /* Ensures minimum width for readability */
+    }
+    
+    body {
+        padding: 20px; /* Reduce body padding on mobile */
+    }
+}
+
+
+
 .day-selector button {
     margin-right: 6px;
     margin-bottom: 6px;
