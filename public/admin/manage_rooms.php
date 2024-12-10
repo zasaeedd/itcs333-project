@@ -10,7 +10,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-if (!is_logged_in() || $_SESSION['role'] !== 'Admin') {
+if (!is_logged_in() || $_SESSION['role'] !== 'admin') {
     header('Location: ../login.php');
     exit();
 }

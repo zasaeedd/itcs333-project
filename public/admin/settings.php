@@ -7,7 +7,7 @@ require_once '../../utils/helpers.php';
 require_once '../../utils/settings.php';
 
 // Redirect if not logged in or not an Admin
-if (!is_logged_in() || $_SESSION['role'] !== 'Admin') {
+if (!is_logged_in() || $_SESSION['role'] !== 'admin') {
     header('Location: ../login.php');
     exit();
 }

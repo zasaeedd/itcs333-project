@@ -15,12 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) { 
         // Validate credentials
         if (password_verify($password, $user['Password'])) {
             $_SESSION['username'] = $user['Username'];
             $_SESSION['role'] = $user['Role']; 
-            if ($user['Role'] === 'Admin') {
+            if ($user['Role'] === 'admin') {
                 header('Location: admin/dashboard.php'); 
             } else {
                 header('Location: main.php');
@@ -32,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $error = 'Invalid username or password'; 
     }
-}
+
 
 function test_input($data)
 {

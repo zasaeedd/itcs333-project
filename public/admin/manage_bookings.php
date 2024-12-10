@@ -5,7 +5,7 @@ session_start();
 require_once '../../config/connect.php';
 require_once '../../utils/helpers.php';
 
-if (!is_logged_in() || $_SESSION['role'] !== 'Admin') {
+if (!is_logged_in() || $_SESSION['role'] !== 'admin') {
     header('Location: ../login.php');
     exit();
 }
